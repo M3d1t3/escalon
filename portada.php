@@ -42,8 +42,28 @@
 
             //Cerrar la ventana de nueva nota
             $("#btnCancelar").click(function(){
-                $("#areaNota").text("");
+                $("#areaNota").val("");
                 $("#editor_nota").hide();
+            });
+
+            //Guardar la nota
+            $("#btnGuardar").click(function(){
+                let texto = $("#areaNota").val();
+                $.ajax({
+                        type: 'POST',
+                        url: 'api/guardarNota.php',
+                        data: {vehiculo:seleccion,nota:texto},
+                        dataType: 'json',
+                        success: function(response){
+                            $("#areaNota").val("");
+                            $("#editor_nota").hide(200);
+                            cargarNotas(seleccion);
+                        },
+                        error: function(){
+                            alert("Error");
+                        }
+
+                });
             });
 
             //Primera busqueda

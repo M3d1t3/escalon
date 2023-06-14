@@ -5,7 +5,7 @@
     $numero = $_POST['numero'];
     $notas = array();
     $i = 0;
-    $consulta = "select * from notas where vehiculo = '" . $numero . "';";
+    $consulta = "select * from notas where vehiculo = '" . $numero . "' order by fecha desc;";
     $resultado = $conn->query($consulta);
 
     while ($fila = mysqli_fetch_array($resultado)){

@@ -78,6 +78,7 @@
     padding: 10px;
 }
 
+
 #nueva_nota{
     width: 95%;
     margin-top: 20px;
@@ -127,6 +128,11 @@
 #botones{
     margin-top: 5px;
     text-align: right;
+}
+
+.seleccionado{
+    background-color: grey;
+    color: white;
 }
 
 @media (max-width: 768px){
