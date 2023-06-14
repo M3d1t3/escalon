@@ -26,17 +26,29 @@
     <script src="node_modules/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script>
         $(document).ready(function(){
+            $("#btnNota").hide();
+            $("#editor_nota").hide();
+            let seleccion = 0;
 
             //Boton de cerrar sesion
             $("#btnCerrar").click(function(){
                 window.location.href = 'api/cerrarSesion.php';
             });
 
-            let vehiculos;
+            //Click en boton nueva nota
+            $("#btnNota").click(function(){
+                $("#editor_nota").show(100);
+            });
 
-            $("#buscador").keyup(function(){
-                //Actualizamos la lista de vehiculos
-                let valor = $("#buscador").val();
+            //Cerrar la ventana de nueva nota
+            $("#btnCancelar").click(function(){
+                $("#areaNota").text("");
+                $("#editor_nota").hide();
+            });
+
+            //Primera busqueda
+            let valor = $("#buscador").val();
+            let vehiculos;
                 $.ajax({
                         type: 'POST',
                         url: 'api/buscarVehiculos.php',
@@ -45,6 +57,24 @@
                         success: function(response){
                             vehiculos = response;
                             console.log(vehiculos);
+                            imprimirBusqueda();
+                        },
+                        error: function(){
+                            alert("Error");
+                        }
+
+                });
+
+            $("#buscador").keyup(function(){
+                //Actualizamos la lista de vehiculos
+                valor = $("#buscador").val();
+                $.ajax({
+                        type: 'POST',
+                        url: 'api/buscarVehiculos.php',
+                        data: {valor:valor},
+                        dataType: 'json',
+                        success: function(response){
+                            vehiculos = response;
                             imprimirBusqueda();
                         },
                         error: function(){
@@ -62,14 +92,62 @@
                     var sugerencia = vehiculos[i];
         
                     // Crear el elemento de la sugerencia
-                    var sugerenciaDiv = $("<div>").addClass("sugerencia");
+                    var sugerenciaDiv = $("<div>").addClass("sugerencia").attr("data-id", sugerencia.ID);;
                     var matricula = $("<p>").text(sugerencia.matricula + "   " + sugerencia.modelo);
                     sugerenciaDiv.append(matricula);
+                    sugerenciaDiv.on("click", function() {
+                        event.stopPropagation();//Evita que se ejecuta el clic del div padre
+                        cargarNotas($(this).attr("data-id"));
+                        $("#btnNota").show();
+                        seleccion = $(this).attr("data-id");
+                    });
                     sugerencias.append(sugerenciaDiv);
                 }
-
-                
             }
+
+            let totalNotas;
+            function cargarNotas(numero){
+                $.ajax({
+                        type: 'POST',
+                        url: 'api/cargarNotas.php',
+                        data: {numero:numero},
+                        dataType: 'json',
+                        success: function(response){
+                            totalNotas = response;
+                            imprimirNotas();
+                        },
+                        error: function(){
+                            alert("Error");
+                        }
+
+                    });
+            }
+
+            function imprimirNotas(){
+                let bloqueNotas = $("#lista_notas");
+                bloqueNotas.empty();
+                let cantidad = totalNotas.length;
+                for(i=0;i<cantidad;i++){
+                    var notaDiv = $("<div>").addClass("divNotas");
+                    var superiorNotas = $("<div>").addClass("superiorNotas");
+                    var fechaNotas = $("<div>").addClass("fechaNotas");
+                    var fecha = $("<p>").text(totalNotas[i].fecha);
+                    fechaNotas.append(fecha);
+                    var usuarioNotas = $("<div>").addClass("usuarioNotas");
+                    var usuario = $("<p>").text(totalNotas[i].usuario);
+                    usuarioNotas.append(usuario);
+                    var textoNotas = $("<div>").addClass("textoNotas");
+                    var texto = $("<p>").text(totalNotas[i].nota);
+                    textoNotas.append(texto);
+                    superiorNotas.append(fechaNotas);
+                    superiorNotas.append(usuarioNotas);
+                    notaDiv.append(superiorNotas);
+                    notaDiv.append(textoNotas);
+
+                    bloqueNotas.append(notaDiv);
+                }
+            }
+
         });
     </script>
     <title>Segundo Escalón</title>
@@ -98,6 +176,19 @@
             </form>
             <div id="lista_vehiculos">
                 
+            </div>
+            <div id="nueva_nota">
+                <button id="btnNota">Nueva nota</button>
+            </div>
+            <div id="lista_notas">
+                
+            </div>
+            <div id="editor_nota">
+                <textarea id="areaNota" placeholder="Nueva nota para el vehículo seleccionado..."></textarea>
+                <div id="botones">
+                    <button class="boton" id="btnGuardar">Guardar</button>
+                    <button class="boton" id="btnCancelar">Cancelar</button>
+                </div>
             </div>
         </div>
     </div>
