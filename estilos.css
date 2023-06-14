@@ -1,0 +1,60 @@
+#bloque_principal{
+    width: 100%;
+    height: 100vh;
+}
+
+
+#bloque_vehiculos{
+    width: 100%;
+    height: 100%;
+}
+
+#form_buscador{
+    width: 95%;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-top: 80px;
+    margin-left: auto;
+    margin-right: auto;
+    padding: 10px;
+}
+
+#form_buscador input{
+    width: 50%;
+    padding: 5px;
+}
+
+#lista_vehiculos{
+    width: 95%;
+    height: 300px;
+    border: 1px solid lightgrey;
+    border-radius: 5px;
+    margin-left: auto;
+    margin-right: auto;
+    margin-top: 20px;
+    overflow-y: scroll;
+}
+
+@media (max-width: 768px){
+    #form_buscador{
+        text-align: center;
+    }
+    #form_buscador input{
+        width: 95%;
+    }
+}
+
+.sugerencia{
+    width: 100%;
+    padding: 10px;
+    background-color: rgb(238, 237, 237);
+    font-size: 22;
+    font-weight: 600;
+    border-bottom: 1px solid grey;
+    cursor: pointer;
+}
+
+.sugerencia:hover{
+    background-color: grey;
+    color: white;
+}
